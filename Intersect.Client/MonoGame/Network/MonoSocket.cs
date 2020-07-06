@@ -7,8 +7,8 @@ using Intersect.Client.Framework.Network;
 using Intersect.Configuration;
 using Intersect.Logging;
 using Intersect.Network;
-using Intersect.Network.Crypto;
-using Intersect.Network.Crypto.Formats;
+using Intersect.Crypto;
+using Intersect.Crypto.Formats;
 
 namespace Intersect.Client.MonoGame.Network
 {
@@ -21,10 +21,6 @@ namespace Intersect.Client.MonoGame.Network
         public static ConcurrentQueue<KeyValuePair<IConnection, IPacket>> PacketQueue =
             new ConcurrentQueue<KeyValuePair<IConnection, IPacket>>();
 
-        public MonoSocket()
-        {
-        }
-
         public override void Connect(string host, int port)
         {
             if (ClientLidgrenNetwork != null)
@@ -35,7 +31,7 @@ namespace Intersect.Client.MonoGame.Network
 
             var config = new NetworkConfiguration(ClientConfiguration.Instance.Host, ClientConfiguration.Instance.Port);
             var assembly = Assembly.GetExecutingAssembly();
-            using (var stream = assembly.GetManifestResourceStream("Intersect.Client.public-intersect.bek"))
+            using (var stream = assembly.GetManifestResourceStream("Intersect.Client.network.handshake.bkey.pub"))
             {
                 var rsaKey = EncryptionKey.FromStream<RsaKey>(stream);
                 Debug.Assert(rsaKey != null, "rsaKey != null");

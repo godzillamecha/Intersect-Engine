@@ -9,6 +9,7 @@ using Intersect.GameObjects;
 using Intersect.GameObjects.Events;
 using Intersect.GameObjects.Events.Commands;
 using Intersect.GameObjects.Maps.MapList;
+using Intersect.Logging;
 
 namespace Intersect.Editor.Forms.Editors.Events
 {
@@ -182,8 +183,18 @@ namespace Intersect.Editor.Forms.Editors.Events
 
                             mCommandProperties.Add(clp);
 
+                            if ((cnd.BranchIds?.Length ?? 0) < 2)
+                            {
+                                Log.Error("Missing branch ids in conditional branch.");
+                            }
+
+                            if (!page.CommandLists.TryGetValue(cnd.BranchIds[0], out var branchCommandList))
+                            {
+                                Log.Error($"Missing command list for branch {cnd.BranchIds[0]}");
+                            }
+
                             PrintCommandList(
-                                page, page.CommandLists[cnd.BranchIds[0]], indent + "          ", lstEventCommands,
+                                page, branchCommandList, indent + "          ", lstEventCommands,
                                 mCommandProperties, map
                             );
 
@@ -199,8 +210,13 @@ namespace Intersect.Editor.Forms.Editors.Events
 
                             mCommandProperties.Add(clp);
 
+                            if (!page.CommandLists.TryGetValue(cnd.BranchIds[1], out branchCommandList))
+                            {
+                                Log.Error($"Missing command list for branch {cnd.BranchIds[1]}");
+                            }
+
                             PrintCommandList(
-                                page, page.CommandLists[cnd.BranchIds[1]], indent + "          ", lstEventCommands,
+                                page, branchCommandList, indent + "          ", lstEventCommands,
                                 mCommandProperties, map
                             );
 
@@ -1080,6 +1096,22 @@ namespace Intersect.Editor.Forms.Editors.Events
                     varvalue = Strings.EventCommandList.subtractvariable.ToString(mod.Value);
 
                     break;
+                case Enums.VariableMods.Multiply:
+                    varvalue = Strings.EventCommandList.multiplyvariable.ToString(mod.Value);
+
+                    break;
+                case Enums.VariableMods.Divide:
+                    varvalue = Strings.EventCommandList.dividevariable.ToString(mod.Value);
+
+                    break;
+                case Enums.VariableMods.LeftShift:
+                    varvalue = Strings.EventCommandList.leftshiftvariable.ToString(mod.Value);
+
+                    break;
+                case Enums.VariableMods.RightShift:
+                    varvalue = Strings.EventCommandList.rightshiftvariable.ToString(mod.Value);
+
+                    break;
                 case Enums.VariableMods.Random:
                     varvalue = Strings.EventCommandList.randvariable.ToString(mod.Value, mod.HighValue);
 
@@ -1120,6 +1152,54 @@ namespace Intersect.Editor.Forms.Editors.Events
                     break;
                 case Enums.VariableMods.SubtractGlobalVar:
                     varvalue = Strings.EventCommandList.subtractglobalvariable.ToString(
+                        ServerVariableBase.GetName(mod.DuplicateVariableId)
+                    );
+
+                    break;
+                case Enums.VariableMods.MultiplyPlayerVar:
+                    varvalue = Strings.EventCommandList.multiplyplayervariable.ToString(
+                        PlayerVariableBase.GetName(mod.DuplicateVariableId)
+                    );
+
+                    break;
+                case Enums.VariableMods.MultiplyGlobalVar:
+                    varvalue = Strings.EventCommandList.multiplyglobalvariable.ToString(
+                        ServerVariableBase.GetName(mod.DuplicateVariableId)
+                    );
+
+                    break;
+                case Enums.VariableMods.DividePlayerVar:
+                    varvalue = Strings.EventCommandList.divideplayervariable.ToString(
+                        PlayerVariableBase.GetName(mod.DuplicateVariableId)
+                    );
+
+                    break;
+                case Enums.VariableMods.DivideGlobalVar:
+                    varvalue = Strings.EventCommandList.divideglobalvariable.ToString(
+                        ServerVariableBase.GetName(mod.DuplicateVariableId)
+                    );
+
+                    break;
+                case Enums.VariableMods.LeftShiftPlayerVar:
+                    varvalue = Strings.EventCommandList.leftshiftplayervariable.ToString(
+                        PlayerVariableBase.GetName(mod.DuplicateVariableId)
+                    );
+
+                    break;
+                case Enums.VariableMods.LeftShiftGlobalVar:
+                    varvalue = Strings.EventCommandList.leftshiftglobalvariable.ToString(
+                        ServerVariableBase.GetName(mod.DuplicateVariableId)
+                    );
+
+                    break;
+                case Enums.VariableMods.RightShiftPlayerVar:
+                    varvalue = Strings.EventCommandList.rightshiftplayervariable.ToString(
+                        PlayerVariableBase.GetName(mod.DuplicateVariableId)
+                    );
+
+                    break;
+                case Enums.VariableMods.RightShiftGlobalVar:
+                    varvalue = Strings.EventCommandList.rightshiftglobalvariable.ToString(
                         ServerVariableBase.GetName(mod.DuplicateVariableId)
                     );
 
